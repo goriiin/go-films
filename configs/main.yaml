@@ -1,0 +1,7 @@
+
+
+
+main_service:
+  domain: 'main_service'
+  port: ':8000',
+  db_prefix: 'main_'

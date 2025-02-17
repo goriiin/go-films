@@ -1,0 +1,56 @@
+services:
+  main_go:
+    build:
+      context: .
+      dockerfile: ./cmd/main_service/Dockerfile
+    ports:
+      - "8000:8000"
+    image: main-go-image
+    container_name: main_go
+    restart: unless-stopped
+    networks:
+      - app-network
+    depends_on:
+      - pg_db
+      - redis_service
+
+  main_pg_db:
+    image: postgres:16.4
+    ports:
+      - "54320:5432"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${MAIN_DB_USERNAME}
+      - POSTGRES_PASSWORD=${MAIN_DB_PASSWORD}
+      - POSTGRES_DB=${MAIN_DB_NAME}
+    volumes:
+      - ./assets/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - main_pg_data:/var/lib/postgresql/data/
+    container_name: pg_db
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  auth_redis_service:
+    image: redis:alpine
+    command: redis-server --requirepass ${AUTH_REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    container_name: redis_service
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  main_pg_db:
+
+networks:
+  app-network:
+    driver: bridge
