@@ -1,18 +1,18 @@
 services:
-  main_go:
-    build:
-      context: .
-      dockerfile: ./cmd/main_service/Dockerfile
-    ports:
-      - "8000:8000"
-    image: main-go-image
-    container_name: main_go
-    restart: unless-stopped
-    networks:
-      - app-network
-    depends_on:
-      - pg_db
-      - redis_service
+#  main_go:
+#    build:
+#      context: .
+#      dockerfile: ./cmd/main_service/Dockerfile
+#    ports:
+#      - "8000:8000"
+#    image: main-go-image
+#    container_name: main_go
+#    restart: unless-stopped
+#    networks:
+#      - app-network
+#    depends_on:
+#      - pg_db
+#      - redis_service
 
   main_pg_db:
     image: postgres:16.4
@@ -21,9 +21,9 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${MAIN_DB_USERNAME}
-      - POSTGRES_PASSWORD=${MAIN_DB_PASSWORD}
-      - POSTGRES_DB=${MAIN_DB_NAME}
+      - POSTGRES_USER=${MAIN_PG_USERNAME}
+      - POSTGRES_PASSWORD=${MAIN_PG_PASSWORD}
+      - POSTGRES_DB=${MAIN_PG_DBNAME}
     volumes:
       - ./assets/init.sql:/docker-entrypoint-initdb.d/init.sql
       - main_pg_data:/var/lib/postgresql/data/
@@ -40,7 +40,7 @@ services:
     env_file:
       - .env
     environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PASSWORD=${AUTH_REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     container_name: redis_service
@@ -49,7 +49,8 @@ services:
       - app-network
 
 volumes:
-  main_pg_db:
+  main_pg_data:
+  redis_data:
 
 networks:
   app-network:

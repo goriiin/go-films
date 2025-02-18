@@ -13,7 +13,7 @@ type DB interface {
 	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
 }
 
-type Repository struct {
+type AuthRepository struct {
 	db  DB
 	log *slog.Logger
 }

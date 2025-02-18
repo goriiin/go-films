@@ -1,7 +1,18 @@
 
 
-
 main_service:
   domain: 'main_service'
   port: ':8000',
-  db_prefix: 'main_'
+  db_prefix: 'MAIN_'
+
+  log:
+    lvl: 'local'
+#    lvl: 'prod'
+    store_time: 7d
+    type: 'json'
+#    type: 'line'
+
+
+
+
+
